@@ -3,7 +3,14 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                sh 'mvn -B -DskipTests clean build package'
+                withEnv(["MAVEN_HOME=/opt/apache-maven-3.9.4"]) {
+                    script {
+                        // Ensure Maven is in the PATH
+                        env.PATH = "${MAVEN_HOME}/bin:${env.PATH}"
+                        // Run Maven commands
+                        sh 'mvn -B -DskipTests clean build package'
+                    }
+                }
             }
         }
         stage('Test') {
